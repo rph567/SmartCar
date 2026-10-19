@@ -1,0 +1,26 @@
+# 编译输出与临时文件
+Objects/
+Listings/
+*.o
+*.d
+*.axf
+*.crf
+*.dep
+*.lnp
+*.lst
+*.map
+*.sct
+*.scvd
+*.__i
+*.iex
+*.htm
+*.tra
+*.bak
+JLinkLog.txt
+*.uvguix.*
+*.uvgui.*
+
+# 系统文件
+Thumbs.db
+desktop.ini
+.DS_Store
