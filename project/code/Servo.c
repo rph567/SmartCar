@@ -31,12 +31,25 @@ void Get_Direction_Error()
 
 void Direction_Control_Error(void)
 {
-    static float error1, error2;
+    static float error1 = 0, error2 = 0;   // error1: 本次误差, error2: 上次误差
+    float d_error;
+
     /*
      刘沐：简单写个舵机PID来位置闭环，这个舵机PID将是校内赛你们需要花最多时间进行调试的地方，加油捏
     */
+    // 注意：directionError 在 main 里已经由 Get_Direction_Error() 算好，这里直接用
+
+    error1  = directionError;               // 本次误差
+    d_error = error1 - error2;              // 误差变化量(微分项)
+
+    // 舵机 PD 输出：中位 + 比例项 + 微分项
+    ServoControlOut = ServoMid
+                    + direction_Kp * error1
+                    + direction_Kd * d_error;
 
     ServoControlOut = LimitBoth_int(ServoControlOut,ServoMid - ServoRMax,ServoMid + ServoLMax);//舵机输出限幅
+
+    error2 = error1;                        // 保存本次误差，供下次算微分
 
     /*
      刘沐：
