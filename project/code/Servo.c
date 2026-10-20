@@ -5,10 +5,10 @@
  */
 #include "zf_common_headfile.h"
 
-int ServoMid=1220,ServoRMax=120,ServoLMax=120;    //需用舵机测试
+int ServoMid=1250,ServoRMax=120,ServoLMax=120;    //需用舵机测试
 
 float directionError = 0;
-int direction_Kp=80,direction_Kd=80,direction_Ki=10;//舵机PD,循迹主要需要调的参数
+int direction_Kp=120,direction_Kd=80,direction_Ki=10;//舵机PD,循迹主要需要调的参数
 int ServoControlOut=0;//舵机实际输出值
 
 void Servo_PWM_Init(void)
@@ -33,6 +33,8 @@ void Direction_Control_Error(void)
 {
     static float error1 = 0, error2 = 0;   // error1: 本次误差, error2: 上次误差
     float d_error;
+    
+    
 
     /*
      刘沐：简单写个舵机PID来位置闭环，这个舵机PID将是校内赛你们需要花最多时间进行调试的地方，加油捏
