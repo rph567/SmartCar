@@ -4,7 +4,7 @@
 * Author: 刘沐
 */
 #include "zf_common_headfile.h"
-int expSpeedL=0,expSpeedR=0,expSpeed=100;
+int expSpeedL=0,expSpeedR=0,expSpeed=160;
 int RKliff=0,LKliff=0;//差速赋值
 int MaxPWM=10000;
 float speedDuty_left=0,speedDuty_right=0;
