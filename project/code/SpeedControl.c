@@ -4,8 +4,12 @@
 * Author: 刘沐
 */
 #include "zf_common_headfile.h"
+#define SPEED_DIFF_GAIN     20
+#define SPEED_DIFF_MAX      30
+#define SPEED_MIN_FORWARD   20
+
 int expSpeedL=0,expSpeedR=0,expSpeed=160;
-int RKliff=0,LKliff=0;//差速赋值
+int RKliff=0,LKliff=0;//差速量，单位cm/s
 int MaxPWM=10000;
 float speedDuty_left=0,speedDuty_right=0;
 float leftspeedError=0,leftspeedError_pre=0,leftspeedError_last=0;
@@ -75,8 +79,20 @@ void GetSpeed()
 
 void Speed_Correct()
 {
+    int diff = (int)(directionError * SPEED_DIFF_GAIN);
+
+    diff = LimitBoth_int(diff, -SPEED_DIFF_MAX, SPEED_DIFF_MAX);
+    LKliff = -diff;
+    RKliff = diff;
+
     expSpeedL=expSpeed+LKliff;
     expSpeedR=expSpeed+RKliff;
+
+    if(expSpeedL < SPEED_MIN_FORWARD)
+        expSpeedL = SPEED_MIN_FORWARD;
+    if(expSpeedR < SPEED_MIN_FORWARD)
+        expSpeedR = SPEED_MIN_FORWARD;
+
     if(StopFlag)//停车标志位
     {
         expSpeedL=0;
