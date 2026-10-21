@@ -5,11 +5,16 @@
  */
 #include "zf_common_headfile.h"
 
-int ServoMid=1250,ServoRMax=120,ServoLMax=120;    //需用舵机测试
+#define DIRECTION_NEAR_OFFSET      10
+#define DIRECTION_FAR_OFFSET       15
+#define DIRECTION_TRACK_MIN_WIDTH  10
+
+int ServoMid=1230,ServoRMax=120,ServoLMax=120;    //需用舵机测试
 
 float directionError = 0;
 int direction_Kp=120,direction_Kd=80,direction_Ki=10;//舵机PD,循迹主要需要调的参数
 int ServoControlOut=0;//舵机实际输出值
+int directionValid=0;//三行误差是否有效
 
 void Servo_PWM_Init(void)
 {
@@ -21,12 +26,80 @@ void servo_duty(uint32 duty)
 }
 void Get_Direction_Error()
 {
-    //计算误差并归一化
-    directionError = ((float)(MidLine[ControlRow]-(COL/2)))/COL;;
+    static float lastDirectionError = 0.0f;
+    static int hasLastDirectionError = 0;
 
-    directionError*=-3.0;//放大和限幅范围由车实际情况调整
+    int rows[3];
+    float rowErrors[3] = {0.0f, 0.0f, 0.0f};
+    float rowWeights[3] = {0.55f, 0.30f, 0.15f};
+    int rowValid[3] = {0, 0, 0};
+    float weightedError = 0.0f;
+    float weightSum = 0.0f;
+    int minRow = EndRow + 2;
+    int i, j;
 
-    directionError= LimitBoth_float(directionError,-1.0,1.0);
+    if(minRow >= ROW)
+    {
+        directionValid = 0;
+        directionError = hasLastDirectionError ? lastDirectionError : 0.0f;
+        return;
+    }
+
+    if(minRow < 0)
+    {
+        minRow = 0;
+    }
+
+    //行号越大越靠近车辆，近处权重最高，远处只提供提前量
+    rows[0] = LimitBoth_int(ControlRow + DIRECTION_NEAR_OFFSET, minRow, ROW - 1);
+    rows[1] = LimitBoth_int(ControlRow, minRow, ROW - 1);
+    rows[2] = LimitBoth_int(ControlRow - DIRECTION_FAR_OFFSET, minRow, ROW - 1);
+
+    for(i = 0; i < 3; i++)
+    {
+        int row = rows[i];
+        int left = LeftLine[row];
+        int right = RightLine[row];
+
+        rowValid[i] = (left >= 0) &&
+                      (right < COL) &&
+                      (left < right) &&
+                      ((right - left) >= DIRECTION_TRACK_MIN_WIDTH) &&
+                      (MidLine[row] >= 0) &&
+                      (MidLine[row] < COL);
+
+        //行号被边界限幅后可能重复，只保留权重更高的近处行
+        for(j = 0; j < i; j++)
+        {
+            if(rows[j] == row)
+            {
+                rowValid[i] = 0;
+            }
+        }
+
+        if(rowValid[i])
+        {
+            rowErrors[i] = (float)(MidLine[row] - (COL / 2));
+            weightedError += rowWeights[i] * rowErrors[i];
+            weightSum += rowWeights[i];
+        }
+    }
+
+    directionValid = (weightSum > 0.0f);
+
+    if(directionValid)
+    {
+        weightedError /= weightSum;
+        directionError = -3.0f * weightedError / COL;
+        directionError = LimitBoth_float(directionError, -1.0f, 1.0f);
+        lastDirectionError = directionError;
+        hasLastDirectionError = 1;
+    }
+    else
+    {
+        //三行都无效时保持上一帧有效误差，避免瞬时丢线把舵机拉回中位
+        directionError = hasLastDirectionError ? lastDirectionError : 0.0f;
+    }
 }
 
 void Direction_Control_Error(void)

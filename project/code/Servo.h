@@ -20,5 +20,6 @@ extern int direction_Kp;
 extern int direction_Kd;
 extern int direction_Ki;
 extern float directionError;
+extern int directionValid;
 
 #endif /* CODE_SERVO_H_ */
