@@ -11,9 +11,18 @@ int ControlRow=50;
 
 void FindControlRow(void)
 {
-    if(ControlRow < EndRow)
-        ControlRow = EndRow + 1;
-    else
-        ControlRow = RowSet;
+    int desiredRow = RowSet;
+
+    if(EndRow + 2 > desiredRow)
+    {
+        desiredRow = EndRow + 2;
+    }
+
+    if(desiredRow >= ROW)
+    {
+        desiredRow = ROW - 1;
+    }
+
+    ControlRow = desiredRow;
 }
 
