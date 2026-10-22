@@ -52,6 +52,11 @@
 //10.调车是要多花时间多琢磨的过程 祝大家校内赛赛出真实水平 学到真东西
 //成功的路上并不拥挤，因为坚持的人不多！！！
 
+  
+
+
+
+
 int main(void)
 {
     clock_init(SYSTEM_CLOCK_600M);  // 不可删除
@@ -103,6 +108,7 @@ int main(void)
             Find_MidLine();
             //找控制行
             FindControlRow();
+            Get_Direction_Error();
             
             Direction_Control_Error();
             Speed_Correct();
