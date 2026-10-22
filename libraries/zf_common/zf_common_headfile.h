@@ -130,6 +130,7 @@
 #include "FindMidline.h"
 #include "Servo.h"
 #include "SpeedControl.h"
+#include "Stop.h"
 
 //===================================================用户自定义文件===================================================
 
