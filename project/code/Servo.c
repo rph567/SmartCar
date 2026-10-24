@@ -31,7 +31,7 @@ void Get_Direction_Error()
 
     int rows[3];
     float rowErrors[3] = {0.0f, 0.0f, 0.0f};
-    float rowWeights[3] = {0.55f, 0.30f, 0.15f};
+    float rowWeights[3] = {0.55f, 0.30f, 0.15f};  //此处可以调节三行控制权重
     int rowValid[3] = {0, 0, 0};
     float weightedError = 0.0f;
     float weightSum = 0.0f;
