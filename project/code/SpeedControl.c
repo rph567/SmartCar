@@ -8,7 +8,7 @@
 #define SPEED_DIFF_MAX      30
 #define SPEED_MIN_FORWARD   20
 
-int expSpeedL=0,expSpeedR=0,expSpeed=160;
+int expSpeedL=0,expSpeedR=0,expSpeed=120;
 int RKliff=0,LKliff=0;//差速量，单位cm/s
 int MaxPWM=10000;
 float speedDuty_left=0,speedDuty_right=0;

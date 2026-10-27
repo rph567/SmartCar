@@ -57,6 +57,8 @@
 
 
 
+
+
 int main(void)
 {
     clock_init(SYSTEM_CLOCK_600M);  // 不可删除
@@ -94,10 +96,16 @@ int main(void)
             mt9v03x_finish_flag = 0; //清零摄像头标志位
             //二值化计算
             Binary_Img();
-            //屏幕显示二值化图像
-            OLED_Print_Img128X64(videoData);
-            //算截止行
+            //用原始二值图检测左侧双白区入口
+            LoopEntry_Update();
+            //右半屏置黑，必须先于截止行和边界计算
+            LoopEntry_ApplyRightHalfMask();
+            //算截止行（此时尚未屏蔽下方五分之一）
             Find_EndRow();
+            //下方五分之一置黑
+            LoopEntry_ApplyBottomFifthMask();
+            //屏幕显示最终参与循迹的二值图像
+            OLED_Print_Img128X64(videoData);
             //记录真实截止行
             RealEndRow=EndRow;
             //修正截止行
@@ -108,6 +116,11 @@ int main(void)
             Find_MidLine();
             //找控制行
             FindControlRow();
+            //环岛遮罩阶段固定控制行，三行方向误差仍按原0.55/0.30/0.15加权
+            if(LoopEntry_IsMaskActive())
+            {
+                ControlRow = LOOP_MASK_CONTROL_ROW;
+            }
             Get_Direction_Error();
             
             Direction_Control_Error();

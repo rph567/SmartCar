@@ -9,7 +9,7 @@
 #define DIRECTION_FAR_OFFSET       15
 #define DIRECTION_TRACK_MIN_WIDTH  10
 
-int ServoMid=1230,ServoRMax=120,ServoLMax=120;    //需用舵机测试
+int ServoMid=1020,ServoRMax=120,ServoLMax=120;    //需用舵机测试
 
 float directionError = 0;
 int direction_Kp=120,direction_Kd=80,direction_Ki=10;//舵机PD,循迹主要需要调的参数
