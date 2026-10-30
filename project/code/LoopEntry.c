@@ -12,16 +12,16 @@
 
 #include "zf_common_headfile.h"
 
-#define LOOP_SCAN_TOP                   (ROW * 15 / 100) // 前视扫描上边界
+#define LOOP_SCAN_TOP                   (ROW * 30 / 100) // 前视扫描上边界
 #define LOOP_SCAN_BOTTOM                (ROW * 70 / 100) // 前视扫描下边界
 #define LOOP_LEFT_THIRD                 (COL / 3)   // 只扫描左侧三分之一
-#define LOOP_WHITE_WIDTH_MIN             3           // 白区纵向宽度至少3像素
-#define LOOP_BLACK_GAP_MIN               8           // 两段白区之间黑区最小宽度
-#define LOOP_BLACK_GAP_MAX               40          // 两段白区之间黑区最大宽度
-#define LOOP_BLACK_REGION_MIN_COLUMNS    8           // 连续黑区至少8列
+#define LOOP_WHITE_WIDTH_MIN             5           // 白区纵向宽度至少3像素
+#define LOOP_BLACK_GAP_MIN               10           // 两段白区之间黑区最小宽度
+#define LOOP_BLACK_GAP_MAX               30          // 两段白区之间黑区最大宽度
+#define LOOP_BLACK_REGION_MIN_COLUMNS    18           // 连续黑区至少8列
 #define LOOP_CONFIRM_FRAMES              3          // 连续确认帧数
-#define LOOP_MASK_DELAY_FRAMES            40         // 识别后延后几帧再开始遮罩
-#define LOOP_MASK_FRAMES                 500         // 强制左侧循迹的图像帧数
+#define LOOP_MASK_DELAY_FRAMES            30        // 识别后延后几帧再开始遮罩
+#define LOOP_MASK_FRAMES                 90         // 强制左侧循迹的图像帧数
 #define LOOP_BOTTOM_MASK_START           (ROW * 4 / 5) // 下方五分之一起点
 
 static uint8 confirm_frames = 0;   // 连续入口确认帧数

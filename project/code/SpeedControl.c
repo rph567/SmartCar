@@ -4,7 +4,7 @@
 * Author: 刘沐
 */
 #include "zf_common_headfile.h"
-#define SPEED_DIFF_GAIN     20
+#define SPEED_DIFF_GAIN     27
 #define SPEED_DIFF_MAX      30
 #define SPEED_MIN_FORWARD   20
 

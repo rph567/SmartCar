@@ -59,6 +59,11 @@
 
 
 
+
+
+
+
+
 int main(void)
 {
     clock_init(SYSTEM_CLOCK_600M);  // 不可删除
@@ -96,6 +101,8 @@ int main(void)
             mt9v03x_finish_flag = 0; //清零摄像头标志位
             //二值化计算
             Binary_Img();
+            //斑马线检测必须在右侧/底部遮罩之前
+            Zebra_Stop_Detect();
             //用原始二值图检测左侧双白区入口
             LoopEntry_Update();
             //右半屏置黑，必须先于截止行和边界计算

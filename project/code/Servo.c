@@ -9,10 +9,10 @@
 #define DIRECTION_FAR_OFFSET       15
 #define DIRECTION_TRACK_MIN_WIDTH  10
 
-int ServoMid=1020,ServoRMax=120,ServoLMax=120;    //需用舵机测试
+int ServoMid=1035,ServoRMax=120,ServoLMax=120;    //需用舵机测试
 
 float directionError = 0;
-int direction_Kp=120,direction_Kd=80,direction_Ki=10;//舵机PD,循迹主要需要调的参数
+int direction_Kp=130,direction_Kd=80,direction_Ki=10;//舵机PD,循迹主要需要调的参数
 int ServoControlOut=0;//舵机实际输出值
 int directionValid=0;//三行误差是否有效
 
@@ -31,7 +31,7 @@ void Get_Direction_Error()
 
     int rows[3];
     float rowErrors[3] = {0.0f, 0.0f, 0.0f};
-    float rowWeights[3] = {0.55f, 0.30f, 0.15f};  //此处可以调节三行控制权重
+    float rowWeights[3] = {0.25f, 0.50f, 0.25f};  //此处可以调节三行控制权重
     int rowValid[3] = {0, 0, 0};
     float weightedError = 0.0f;
     float weightSum = 0.0f;
