@@ -3,12 +3,13 @@
  *
  * 基础斑马线检测：
  * 在图像中间区域逐行统计黑白跳变次数。
- * 如果同一帧中有超过 3 行满足条件，就直接置位 StopFlag。
+ * 连续 3 帧有超过 3 行满足条件后，置位 StopFlag。
  */
 
 #include "zf_common_headfile.h"
 
 uint8 zebra_row_count = 0;
+static uint8 zebra_confirm_count = 0;
 
 void Zebra_Stop_Detect(void)
 {
@@ -66,10 +67,18 @@ void Zebra_Stop_Detect(void)
 
     zebra_row_count = zebra_rows;
 
-    /* 大于 3 行像斑马线，直接停车 */
+    /* 连续 ZEBRA_CONFIRM_FRAMES 帧满足条件后才停车 */
     if (zebra_rows >= ZEBRA_STOP_ROWS)
     {
-        StopFlag = 1;
+        zebra_confirm_count++;
+        if (zebra_confirm_count >= ZEBRA_CONFIRM_FRAMES)
+        {
+            StopFlag = 1;
+        }
+    }
+    else
+    {
+        zebra_confirm_count = 0;
     }
 }
 

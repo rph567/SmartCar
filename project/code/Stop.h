@@ -15,8 +15,10 @@
 #define ZEBRA_BLACK_MIN         6
 /* 一行内至少有多少个白点，避免整行偏黑 */
 #define ZEBRA_WHITE_MIN         10
-/* 连续多少行满足条件后停车：大于 3 行，即至少 4 行 */
+/* 单帧连续多少行满足条件才计作一次斑马线命中：大于 3 行，即至少 4 行 */
 #define ZEBRA_STOP_ROWS         4
+/* 连续多少帧命中后才停车 */
+#define ZEBRA_CONFIRM_FRAMES    3
 
 /* 扫描区域：图像中间左右各去掉 20 列 */
 #define ZEBRA_COL_MARGIN        20
