@@ -4,11 +4,14 @@
 * Author: 刘沐
 */
 #include "zf_common_headfile.h"
-#define SPEED_DIFF_GAIN     35
-#define SPEED_DIFF_MAX      40
+#define SPEED_DIFF_GAIN     55
+#define SPEED_DIFF_MAX      60
 #define SPEED_MIN_FORWARD   20
+#define SPEED_CURVE_ERROR_MIN   0.15f  // 转向误差超过该值开始弯道减速
+#define SPEED_CURVE_SLOW_GAIN   80     // 减速强度，单位 cm/s
+#define SPEED_CURVE_SLOW_MAX    60     // 最大降速量，单位 cm/s
 
-int expSpeedL=0,expSpeedR=0,expSpeed=120;
+int expSpeedL=0,expSpeedR=0,expSpeed=180;
 int RKliff=0,LKliff=0;//差速量，单位cm/s
 int MaxPWM=10000;
 float speedDuty_left=0,speedDuty_right=0;
@@ -80,13 +83,29 @@ void GetSpeed()
 void Speed_Correct()
 {
     int diff = (int)(directionError * SPEED_DIFF_GAIN);
+    int curveSlowdown = 0;
+    int baseSpeed;
+    float curveError = directionError;
+
+    if (curveError < 0.0f)
+        curveError = -curveError;
+
+    if (curveError > SPEED_CURVE_ERROR_MIN)
+    {
+        curveSlowdown = (int)((curveError - SPEED_CURVE_ERROR_MIN) * SPEED_CURVE_SLOW_GAIN);
+        curveSlowdown = LimitBoth_int(curveSlowdown, 0, SPEED_CURVE_SLOW_MAX);
+    }
+
+    baseSpeed = expSpeed - curveSlowdown;
+    if (baseSpeed < SPEED_MIN_FORWARD)
+        baseSpeed = SPEED_MIN_FORWARD;
 
     diff = LimitBoth_int(diff, -SPEED_DIFF_MAX, SPEED_DIFF_MAX);
     LKliff = -diff;
     RKliff = diff;
 
-    expSpeedL=expSpeed+LKliff;
-    expSpeedR=expSpeed+RKliff;
+    expSpeedL=baseSpeed+LKliff;
+    expSpeedR=baseSpeed+RKliff;
 
     if(expSpeedL < SPEED_MIN_FORWARD)
         expSpeedL = SPEED_MIN_FORWARD;

@@ -12,7 +12,7 @@
 int ServoMid=1035,ServoRMax=120,ServoLMax=120;    //需用舵机测试
 
 float directionError = 0;
-int direction_Kp=130,direction_Kd=80,direction_Ki=10;//舵机PD,循迹主要需要调的参数
+int direction_Kp=120,direction_Kd=80,direction_Ki=10;//舵机PD,循迹主要需要调的参数
 int ServoControlOut=0;//舵机实际输出值
 int directionValid=0;//三行误差是否有效
 

@@ -6,7 +6,7 @@
 
 #include "zf_common_headfile.h"
 
-int RowSet = 60;
+int RowSet = 55;
 int ControlRow=50;
 
 void FindControlRow(void)
