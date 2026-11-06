@@ -20,8 +20,8 @@
 #define LOOP_BLACK_GAP_MAX               30          // 两段白区之间黑区最大宽度
 #define LOOP_BLACK_REGION_MIN_COLUMNS    18           // 连续黑区至少8列
 #define LOOP_CONFIRM_FRAMES              3          // 连续确认帧数
-#define LOOP_MASK_DELAY_FRAMES            18        // 识别后延后几帧再开始遮罩
-#define LOOP_MASK_FRAMES                 75         // 强制左侧循迹的图像帧数
+#define LOOP_MASK_DELAY_FRAMES            15        // 识别后延后几帧再开始遮罩
+#define LOOP_MASK_FRAMES                 65         // 强制左侧循迹的图像帧数
 #define LOOP_BOTTOM_MASK_START           (ROW * 4 / 5) // 下方五分之一起点
 
 static uint8 confirm_frames = 0;   // 连续入口确认帧数

@@ -31,7 +31,7 @@ void Get_Direction_Error()
 
     int rows[3];
     float rowErrors[3] = {0.0f, 0.0f, 0.0f};
-    float rowWeights[3] = {0.50f, 0.30f, 0.20f};  //此处可以调节三行控制权重
+    float rowWeights[3] = {0.40f, 0.30f, 0.30f};  //此处可以调节三行控制权重
     int rowValid[3] = {0, 0, 0};
     float weightedError = 0.0f;
     float weightSum = 0.0f;
@@ -90,7 +90,7 @@ void Get_Direction_Error()
     if(directionValid)
     {
         weightedError /= weightSum;
-        directionError = -3.0f * weightedError / COL;
+        directionError = -3.3f * weightedError / COL;
         directionError = LimitBoth_float(directionError, -1.0f, 1.0f);
         lastDirectionError = directionError;
         hasLastDirectionError = 1;

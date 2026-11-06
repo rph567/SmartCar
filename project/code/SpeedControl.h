@@ -25,6 +25,7 @@ void Set_Motor_duty(int leftduty,int rightduty);
 #define  LEFT_PULSE_PER_METER 12000 //5700
 extern int16 leftPulse,rightPulse;
 extern float leftSpeed,rightSpeed;
+extern volatile uint32 travelPulseCount;
 extern int expSpeedL,expSpeedR;
 extern int RKliff,LKliff;
 extern int expSpeed;

@@ -1,15 +1,19 @@
 /*
  * Stop.c
  *
- * 基础斑马线检测：
- * 在图像中间区域逐行统计黑白跳变次数。
- * 连续 3 帧有超过 3 行满足条件后，置位 StopFlag。
+ * 首次斑马线作为发车标记，第二次识别后驶过再停车。
  */
 
 #include "zf_common_headfile.h"
 
 uint8 zebra_row_count = 0;
 static uint8 zebra_confirm_count = 0;
+static uint8 zebra_clear_count = 0;
+static uint8 zebra_phase = 0;  /* 0:首次识别 1:驶离 2:等待一圈 3:驶过终点 */
+static uint32 zebra_mark_pulses = 0;
+
+#define ZEBRA_REARM_PULSES ((LEFT_PULSE_PER_METER + RIGHT_PULSE_PER_METER) * ZEBRA_REARM_CM / 200)
+#define ZEBRA_PASS_PULSES  ((LEFT_PULSE_PER_METER + RIGHT_PULSE_PER_METER) * ZEBRA_PASS_CM / 200)
 
 void Zebra_Stop_Detect(void)
 {
@@ -24,7 +28,6 @@ void Zebra_Stop_Detect(void)
 
     /*
      * 只扫描图像最底部的 ZEBRA_SCAN_ROWS 行。
-     * 从 row=99 开始往上扫描，斑马线进入底部区域后才停车。
      */
     for (row = ROW - 1;
          row >= ROW - ZEBRA_SCAN_ROWS;
@@ -67,18 +70,40 @@ void Zebra_Stop_Detect(void)
 
     zebra_row_count = zebra_rows;
 
-    /* 连续 ZEBRA_CONFIRM_FRAMES 帧满足条件后才停车 */
+    /* 连续命中确认，避免同一条斑马线重复计圈 */
     if (zebra_rows >= ZEBRA_STOP_ROWS)
     {
-        zebra_confirm_count++;
-        if (zebra_confirm_count >= ZEBRA_CONFIRM_FRAMES)
-        {
-            StopFlag = 1;
-        }
+        if (zebra_confirm_count < ZEBRA_CONFIRM_FRAMES)
+            zebra_confirm_count++;
+        zebra_clear_count = 0;
     }
     else
     {
         zebra_confirm_count = 0;
+        if (zebra_clear_count < ZEBRA_CONFIRM_FRAMES)
+            zebra_clear_count++;
+    }
+
+    if (zebra_phase == 0 && zebra_confirm_count >= ZEBRA_CONFIRM_FRAMES)
+    {
+        zebra_mark_pulses = travelPulseCount;
+        zebra_phase = 1;
+    }
+    else if (zebra_phase == 1 &&
+             zebra_clear_count >= ZEBRA_CONFIRM_FRAMES &&
+             travelPulseCount - zebra_mark_pulses >= ZEBRA_REARM_PULSES)
+    {
+        zebra_phase = 2;
+    }
+    else if (zebra_phase == 2 && zebra_confirm_count >= ZEBRA_CONFIRM_FRAMES)
+    {
+        zebra_mark_pulses = travelPulseCount;
+        zebra_phase = 3;
+    }
+    else if (zebra_phase == 3 &&
+             travelPulseCount - zebra_mark_pulses >= ZEBRA_PASS_PULSES)
+    {
+        StopFlag = 1;
     }
 }
 

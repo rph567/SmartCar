@@ -1,7 +1,7 @@
 /*
  * Stop.h
  *
- * 斑马线停车检测。
+ * 斑马线圈数和停车检测。
  */
 
 #ifndef CODE_STOP_H_
@@ -17,8 +17,12 @@
 #define ZEBRA_WHITE_MIN         10
 /* 单帧连续多少行满足条件才计作一次斑马线命中：大于 3 行，即至少 4 行 */
 #define ZEBRA_STOP_ROWS         4
-/* 连续多少帧命中后才停车 */
+/* 连续多少帧命中才确认斑马线 */
 #define ZEBRA_CONFIRM_FRAMES    3
+/* 首次过线后至少驶离多远才接受下一次识别，单位 cm */
+#define ZEBRA_REARM_CM          150
+/* 第二次识别后继续行驶多远才最终停车，单位 cm，需上车标定 */
+#define ZEBRA_PASS_CM           20
 
 /* 扫描区域：图像中间左右各去掉 20 列 */
 #define ZEBRA_COL_MARGIN        20

@@ -11,7 +11,7 @@
 #define SPEED_CURVE_SLOW_GAIN   80     // 减速强度，单位 cm/s
 #define SPEED_CURVE_SLOW_MAX    60     // 最大降速量，单位 cm/s
 
-int expSpeedL=0,expSpeedR=0,expSpeed=180;
+int expSpeedL=0,expSpeedR=0,expSpeed=200;
 int RKliff=0,LKliff=0;//差速量，单位cm/s
 int MaxPWM=10000;
 float speedDuty_left=0,speedDuty_right=0;
@@ -54,6 +54,7 @@ void Set_Motor_duty(int leftduty,int rightduty)//设置电机pwm输出
 //编码器
 int16 leftPulse,rightPulse;
 float leftSpeed,rightSpeed;
+volatile uint32 travelPulseCount = 0;
 void Encoder_Init(void)
 {
     encoder_quad_init(QTIMER1_ENCODER1, QTIMER1_ENCODER1_CH1_C0, QTIMER1_ENCODER1_CH2_C1);
@@ -74,7 +75,12 @@ void Encoder_getvalue()
 
 void GetSpeed()
 {
+    int32 forwardPulses;
+
     Encoder_getvalue();
+    forwardPulses = (int32)leftPulse + rightPulse;
+    if (forwardPulses > 0)
+        travelPulseCount += (uint32)(forwardPulses / 2);
     leftSpeed  = (leftPulse*100)/(LEFT_PULSE_PER_METER*dt);
     rightSpeed = (rightPulse*100)/(RIGHT_PULSE_PER_METER*dt); 
     Encoder_clear();
